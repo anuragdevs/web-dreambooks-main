@@ -8,9 +8,10 @@ import SingleUser from "@/modules/SingleUser";
 import Table from "@/modules/Table/Table";
 import { getAllBooks } from "@/services/APIs/books";
 import { getAllSeekers } from "@/services/APIs/user";
+import { debounce } from "@/Utilities/helpers";
 import { IndianRupee } from "lucide-react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Index({ role }) {
   const [data, setData] = useState([]);
@@ -24,18 +25,25 @@ export default function Index({ role }) {
   });
   const [paginationData, setPaginationData] = useState(null);
 
-  const filterHandler = (keyword, status, page, limit, sort) => {
+  const filterHandler = useCallback((keyword, status, page, limit, sort) => {
     const newFilters = {
-      keyword: keyword || "",
-      status: status || "",
-      sort: sort || "",
-      page: page || 1,
-      limit: limit || 24,
+      keyword: keyword ?? "",
+      status: status ?? "",
+      sort: sort ?? "",
+      page: page ?? 1,
+      limit: limit ?? 10,
     };
 
     setFilters(newFilters);
     fetchData(newFilters);
-  };
+  }, []);
+
+  const debouncedFilterHandler = useCallback(
+    debounce((keyword, status, page, limit, sort) => {
+      filterHandler(keyword, status, page, limit, sort);
+    }, 400),
+    [filterHandler]
+  );
 
   const fetchData = async (queryFilters = filters) => {
     setLoading(true);
@@ -49,11 +57,32 @@ export default function Index({ role }) {
     }
 
     if (queryFilters.status) {
-      payload.is_verify = queryFilters.status;
+      switch (queryFilters.status) {
+        case "1":
+          payload.status = "verified";
+          break;
+        case "0":
+          payload.status = "pending";
+          break;
+        case "2":
+          payload.status = "declined";
+          break;
+        default:
+          break;
+      }
     }
 
     if (queryFilters.sort) {
-      payload.sort = queryFilters.sort;
+      switch (queryFilters.sort) {
+        case "1":
+          payload.sort = "oldToNew";
+          break;
+        case "2":
+          payload.sort = "newToOld";
+          break;
+        default:
+          break;
+      }
     }
 
     const response = await getAllBooks(payload);
@@ -67,6 +96,13 @@ export default function Index({ role }) {
       });
       setLoading(false);
     } else {
+      setData([]);
+      setPaginationData({
+        page: 1,
+        limit: queryFilters.limit,
+        totalPages: 0,
+        totalResults: 0,
+      });
       setLoading(false);
     }
   };
@@ -109,7 +145,13 @@ export default function Index({ role }) {
         </Button>
       </div>
       <div className="w-full bg-[#FDFCFF] mt-5 rounded-md pb-3">
-        <FilterBar data={data} sort={true} handler={filterHandler} />
+        <FilterBar
+          data={data}
+          sort={true}
+          handler={filterHandler}
+          debouncedHandler={debouncedFilterHandler}
+          currentFilters={filters}
+        />
         <div className="w-full bg-[#FDFCFF] grid grid-cols-3 gap-4 px-5 py-3 mb-4">
           {/* <h6 className='text-sm font-normal text-input-label w-2/12'>Username</h6> */}
           {/* <h6 className='text-sm font-normal text-input-label w-1/6 text-center'>Id</h6> */}

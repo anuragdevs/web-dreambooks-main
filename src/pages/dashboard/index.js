@@ -67,10 +67,14 @@ export default function Index({ role }) {
             card.roleCondition && (
               <div
                 key={index}
-                className={`w-full flex flex-wrap p-4 bg-[${card.bgColor}] rounded-[10px]`}
+                className="w-full flex flex-wrap p-4 rounded-[10px]"
+                style={{ backgroundColor: card.bgColor }}
               >
                 <div className="w-full flex gap-2 items-center">
-                  <span className={`bg-[${card.iconBgColor}] p-1.5 rounded-lg`}>
+                  <span
+                    className=" p-1.5 rounded-lg"
+                    style={{ backgroundColor: card.iconBgColor }}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="18"
@@ -96,7 +100,9 @@ export default function Index({ role }) {
                       />
                     </svg>
                   </span>
-                  <span className="font-semibold text-black overflow-hidden whitespace-nowrap text-ellipsis">{card.title}</span>
+                  <span className="font-semibold text-black overflow-hidden whitespace-nowrap text-ellipsis">
+                    {card.title}
+                  </span>
                 </div>
                 <div className="w-full mt-4">
                   <span className="text-2xl font-bold">{card.value}</span>
