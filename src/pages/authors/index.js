@@ -22,6 +22,13 @@ export default function Index({ role }) {
     limit: 10,
   });
   const [paginationData, setPaginationData] = useState(null);
+  // FIX: Safe transformStatus that always returns a string
+  const transformStatus = (status) => {
+    if (!status) return "unknown";
+    if (status === "approved") return "active";
+    if (status === "declined") return "suspended";
+    return status.toString();
+  };
 
   const filterHandler = useCallback((keyword, status, page, limit, sort) => {
     const newFilters = {
@@ -88,7 +95,12 @@ export default function Index({ role }) {
     const response = await getAllAuthors(payload);
 
     if (response.status) {
-      setData(response.data.results);
+      // FIX: Sort authors by transformed status
+      // FIX: Safely sort authors by transformed status
+      const sorted = [...response.data.results].sort((a, b) =>
+        transformStatus(a.status).localeCompare(transformStatus(b.status))
+      );
+      setData(sorted);
       setPaginationData({
         page: response.data.page,
         limit: response.data.limit,
