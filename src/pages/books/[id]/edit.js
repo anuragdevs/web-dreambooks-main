@@ -11,6 +11,9 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useRef, useState } from 'react'
 import { categories } from '@/Utilities/positions'
 
+
+
+
 export default function Create({role}) {
     const fileRef = useRef(null);
     const [authors, setAuthors] = useState();
@@ -60,104 +63,178 @@ export default function Create({role}) {
             }
         }
     }
+    // const saveBookDetails = async (e) => {
+    //     e.preventDefault();
+    //     setLoading(true);
+    //     const payload = new FormData();
+    //     const formData = new FormData(e.target);
+    //     const title = formData.get("title");
+    //     const subtitle = formData.get("sub-title");
+    //     const description = formData.get("description");
+    //     const isbn = formData.get("isbn");
+    //     const author = formData.get("author");
+    //     const category = formData.get("category");
+    //     const language = formData.get("language");
+    //     const price = formData.get("price");
+    //     const platforms = [];
+
+    //     if(bindingType==0){
+    //         payload.append("bindingSize[0]", "paperBack");
+    //         if(document.getElementById("dreambookpublication").checked){
+    //             const royalty = document.getElementById("dreambookpublicationvalue").value;
+    //             platforms.push({
+    //                 "platform":"dream",
+    //                 "royalty": parseInt(royalty)
+    //             })
+    //         }
+            
+    //         if(document.getElementById("amazonpublication").checked){
+    //             const royalty = document.getElementById("amazonpublicationvalue").value;
+    //             platforms.push({
+    //                 "platform":"amazon",
+    //                 "royalty": parseInt(royalty)
+    //             })
+    //         }
+            
+    //         if(document.getElementById("flipkartpublication").checked){
+    //             const royalty = document.getElementById("flipkartpublicationvalue").value;
+    //             platforms.push({
+    //                 "platform":"flipkart",
+    //                 "royalty": parseInt(royalty)
+    //             })
+    //         }
+    //         payload.append("platforms", JSON.stringify(platforms));
+    //     }
+    //     else if(bindingType==1){
+    //         payload.append("bindingSize[0]", "hardCover");
+    //         if(document.getElementById("dreambookpublication").checked){
+    //             const royalty = document.getElementById("dreambookpublicationvalue").value;
+    //             platforms.push({
+    //                 "platform":"dream",
+    //                 "royalty": parseInt(royalty)
+    //             })
+    //         }
+            
+    //         if(document.getElementById("amazonpublication").checked){
+    //             const royalty = document.getElementById("amazonpublicationvalue").value;
+    //             platforms.push({
+    //                 "platform":"amazon",
+    //                 "royalty": parseInt(royalty)
+    //             })
+    //         }
+            
+    //         if(document.getElementById("flipkartpublication").checked){
+    //             const royalty = document.getElementById("flipkartpublicationvalue").value;
+    //             platforms.push({
+    //                 "platform":"flipkart",
+    //                 "royalty": parseInt(royalty)
+    //             })
+    //         }
+    //         payload.append("platforms", JSON.stringify(platforms));
+    //     }
+    //     else{
+    //         payload.append("bindingSize[0]", "ebook");
+    //         const royalty = document.getElementById("kindle-royalty").value;
+    //         platforms.push({
+    //             "platform":"kindle",
+    //             "royalty": parseInt(royalty)
+    //         })
+    //         payload.append("platforms", JSON.stringify(platforms));
+    //     }
+
+    //     payload.append("title", title);
+    //     payload.append("subtitle", subtitle);
+    //     payload.append("author", author);
+    //     if(cover && cover != data?.coverImage?.url){
+    //         payload.append("coverImage", cover);
+    //     }
+    //     payload.append("description", description);
+    //     payload.append("isbnNumber", isbn);
+    //     payload.append("categories[0]", category);
+        
+    //     payload.append("language", language);
+    //     payload.append("price", price);
+        
+    //     const response = await editBook(payload, router.query["id"]);
+    //     if(response.status){
+    //         setLoading(false);
+    //         router.push("/books/"+router.query["id"]);
+    //     }
+    // }
     const saveBookDetails = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const payload = new FormData();
-        const formData = new FormData(e.target);
-        const title = formData.get("title");
-        const subtitle = formData.get("sub-title");
-        const description = formData.get("description");
-        const isbn = formData.get("isbn");
-        const author = formData.get("author");
-        const category = formData.get("category");
-        const language = formData.get("language");
-        const price = formData.get("price");
-        const platforms = [];
-
-        if(bindingType==0){
+      
+        try {
+          const payload = new FormData();
+          const formData = new FormData(e.target);
+          const title = formData.get("title");
+          const subtitle = formData.get("sub-title");
+          const description = formData.get("description");
+          const isbn = formData.get("isbn");
+          const author = formData.get("author");
+          const category = formData.get("category");
+          const language = formData.get("language");
+          const price = formData.get("price");
+          const platforms = [];
+      
+          if (bindingType === 0) {
             payload.append("bindingSize[0]", "paperBack");
-            if(document.getElementById("dreambookpublication").checked){
-                const royalty = document.getElementById("dreambookpublicationvalue").value;
-                platforms.push({
-                    "platform":"dream",
-                    "royalty": parseInt(royalty)
-                })
+            if (document.getElementById("dreambookpublication").checked) {
+              platforms.push({ platform: "dream", royalty: parseInt(document.getElementById("dreambookpublicationvalue").value) });
             }
-            
-            if(document.getElementById("amazonpublication").checked){
-                const royalty = document.getElementById("amazonpublicationvalue").value;
-                platforms.push({
-                    "platform":"amazon",
-                    "royalty": parseInt(royalty)
-                })
+            if (document.getElementById("amazonpublication").checked) {
+              platforms.push({ platform: "amazon", royalty: parseInt(document.getElementById("amazonpublicationvalue").value) });
             }
-            
-            if(document.getElementById("flipkartpublication").checked){
-                const royalty = document.getElementById("flipkartpublicationvalue").value;
-                platforms.push({
-                    "platform":"flipkart",
-                    "royalty": parseInt(royalty)
-                })
+            if (document.getElementById("flipkartpublication").checked) {
+              platforms.push({ platform: "flipkart", royalty: parseInt(document.getElementById("flipkartpublicationvalue").value) });
             }
-            payload.append("platforms", JSON.stringify(platforms));
-        }
-        else if(bindingType==1){
+          } else if (bindingType === 1) {
             payload.append("bindingSize[0]", "hardCover");
-            if(document.getElementById("dreambookpublication").checked){
-                const royalty = document.getElementById("dreambookpublicationvalue").value;
-                platforms.push({
-                    "platform":"dream",
-                    "royalty": parseInt(royalty)
-                })
+            if (document.getElementById("dreambookpublication").checked) {
+              platforms.push({ platform: "dream", royalty: parseInt(document.getElementById("dreambookpublicationvalue").value) });
             }
-            
-            if(document.getElementById("amazonpublication").checked){
-                const royalty = document.getElementById("amazonpublicationvalue").value;
-                platforms.push({
-                    "platform":"amazon",
-                    "royalty": parseInt(royalty)
-                })
+            if (document.getElementById("amazonpublication").checked) {
+              platforms.push({ platform: "amazon", royalty: parseInt(document.getElementById("amazonpublicationvalue").value) });
             }
-            
-            if(document.getElementById("flipkartpublication").checked){
-                const royalty = document.getElementById("flipkartpublicationvalue").value;
-                platforms.push({
-                    "platform":"flipkart",
-                    "royalty": parseInt(royalty)
-                })
+            if (document.getElementById("flipkartpublication").checked) {
+              platforms.push({ platform: "flipkart", royalty: parseInt(document.getElementById("flipkartpublicationvalue").value) });
             }
-            payload.append("platforms", JSON.stringify(platforms));
-        }
-        else{
+          } else {
             payload.append("bindingSize[0]", "ebook");
-            const royalty = document.getElementById("kindle-royalty").value;
-            platforms.push({
-                "platform":"kindle",
-                "royalty": parseInt(royalty)
-            })
-            payload.append("platforms", JSON.stringify(platforms));
-        }
-
-        payload.append("title", title);
-        payload.append("subtitle", subtitle);
-        payload.append("author", author);
-        if(cover && cover != data?.coverImage?.url){
+            const royalty = parseInt(document.getElementById("kindle-royalty").value);
+            platforms.push({ platform: "kindle", royalty });
+          }
+      
+          payload.append("platforms", JSON.stringify(platforms));
+          payload.append("title", title);
+          payload.append("subtitle", subtitle);
+          payload.append("author", author);
+          if (cover && cover !== data?.coverImage?.url) {
             payload.append("coverImage", cover);
+          }
+          payload.append("description", description);
+          payload.append("isbnNumber", isbn);
+          payload.append("categories[0]", category);
+          payload.append("language", language);
+          payload.append("price", price);
+      
+          const response = await editBook(payload, router.query["id"]);
+      
+          if (response?.status) {
+            router.push("/books/" + router.query["id"]);
+          } else {
+            console.error("❌ Book update failed:", response);
+            alert("Book update failed. Please check the data and try again.");
+          }
+        } catch (error) {
+          console.error("❌ Unexpected error:", error);
+          alert("Something went wrong. Please try again.");
+        } finally {
+          setLoading(false); // Always stop loader
         }
-        payload.append("description", description);
-        payload.append("isbnNumber", isbn);
-        payload.append("categories[0]", category);
-        
-        payload.append("language", language);
-        payload.append("price", price);
-        
-        const response = await editBook(payload, router.query["id"]);
-        if(response.status){
-            setLoading(false);
-            router.push("/books/"+router.query["id"]);
-        }
-    }
+      };
+      
         
     const fetchData = async (book) => {
         setLoading(true);
